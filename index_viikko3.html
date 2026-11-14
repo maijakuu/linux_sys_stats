@@ -36,8 +36,9 @@
 
     <section aria-labelledby="schedule-title">
       <h2 id="schedule-title">Schedule and serving</h2>
-      <p>Cron runs the viewer every minute with the schedule <code>* * * * *</code>. 
-
+      <p>Cron runs the viewer every minute with the schedule <code>* * * * *</code></p>. 
+      <p>Cron job was created with the following command:  <code>* * * * * cd /home/dev/linux/linux_sys_stats && /bin/bash 
+        ./system_stats_viewer.sh > /var/www/viikko3/.index.html.tmp && mv -f /var/www/viikko3/.index.html.tmp /var/www/viikko3/index.html</code>. 
     </section>
 
     <section aria-labelledby="tests-title">
