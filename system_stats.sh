@@ -29,6 +29,10 @@ disk_status() {
         printf 'OK\n'
     fi
 }
+#TESTS
+#disk_status 50  # Expected OK
+#disk_status 80  # Expected WARNING
+#disk_status 90  # Expected WARNING
 
 echo -e "${BOLD}Levytila (/):${RESET}"
 echo -e "  Käytetty:   ${DISK_RAW}% ($(disk_status "$DISK_RAW"))"
