@@ -22,20 +22,16 @@ echo -e "${BOLD}Käynnissä:${RESET}               $UPTIME"
 echo "---------------------------------------------"
 
 # 2. Root Disk Usage (%)
-DISK_RAW=$(df --output=pcent / 2>/dev/null | tail -n 1 | tr -dc '0-9')
-DISK_TOTAL=$(df -h --output=size / 2>/dev/null | tail -n 1 | tr -d ' ')
-DISK_AVAIL=$(df -h --output=avail / 2>/dev/null | tail -n 1 | tr -d ' ')
-# Colorize disk usage based on threshold
-#When doing testing, the thresholds will be changed manually to make sure the logic works
-if [ "$DISK_RAW" -ge 90 ]; then
-   DISK_COLOR=$RED
-elif [ "$DISK_RAW" -ge 75 ]; then
-   DISK_COLOR=$YELLOW
-else
-   DISK_COLOR=$GREEN
-fi
+disk_status() {
+    if [ "$1" -ge 80 ]; then
+        printf 'WARNING\n'
+    else
+        printf 'OK\n'
+    fi
+}
+
 echo -e "${BOLD}Levytila (/):${RESET}"
-echo -e "  Käytetty:   ${DISK_COLOR}${DISK_RAW}%${RESET}"
+echo -e "  Käytetty:   ${DISK_RAW}% ($(disk_status "$DISK_RAW"))"
 echo -e "  Vapaana:    ${DISK_AVAIL} / Yhteensä: ${DISK_TOTAL}"
 echo -e "---------------------------------------------"
 
@@ -47,7 +43,4 @@ echo -e "${BOLD}Keskusmuisti (RAM):${RESET}"
 echo -e "  Käytössä:   $RAM_USED ($RAM_PCT%)"
 echo -e "  Käytettävissä: $RAM_AVAIL / Yhteensä: $RAM_TOTAL"
 
-if [ "$SWAP_TOTAL" != "0B" ] && [ -n "$SWAP_TOTAL" ]; then
-   echo -e "  Swap:       $SWAP_USED käytetty / $SWAP_TOTAL"
-fi
 echo -e "\n${BOLD}${CYAN}=============================================${RESET}"
