@@ -22,7 +22,7 @@ DISK_TOTAL=$(df -h --output=size / | tail -n 1 | tr -d ' ')
 # 1. Date, Time & Timezone (Finnish format)
 echo -e "${BOLD}Report generated:${RESET}          $FIN_TIME"
 echo -e "${BOLD}Timezone of the server:${RESET}    $TZ_NAME $TZ_OFFSET"
-echo -e "${BOLD}Server running time:${RESET}               $UPTIME"
+echo -e "${BOLD}Server running time:${RESET}       $UPTIME"
 echo "---------------------------------------------"
 
 # 2. Root Disk Usage (%)
