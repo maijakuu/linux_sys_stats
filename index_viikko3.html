@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="system_stats_viewer.css">
+  <title>Week 3: Printing system status using Bash</title>
+</head>
+<body>
+  <main class="report">
+    <header>
+      <p class="eyebrow">Linux · Bash · System monitoring</p>
+      <h1>Week 3: Printing system status using Bash</h1>
+      <p class="intro">A Bash script that reports the server's time, uptime, disk space and memory usage.</p>
+    </header>
+
+    <section aria-labelledby="commands-title">
+      <h2 id="commands-title">Commands used</h2>
+      <dl class="commands">
+        <dt><code>date '+%-d.%-m.%Y klo %H.%M.%S'</code></dt>
+        <dd>Formats the report time as day, month, year and time. The script sets <code>LC_TIME=fi_FI.UTF-8</code> for this command.</dd>
+        <dt><code>uptime -p</code></dt>
+        <dd>Shows how long the server has been running in a readable format.</dd>
+        <dt><code>df --output=pcent / | tail -n 1 | tr -dc '0-9'</code></dt>
+        <dd>Reads root filesystem usage. The pipes pass the output to <code>tail</code> to select the last line, then to <code>tr</code> to keep only digits for the disk status check.</dd>
+        <dt><code>free -h | awk '/^Mem:/ {print $2, $3, $7}'</code></dt>
+        <dd>Extracts total, used and available RAM from the memory row using human-readable units.</dd>
+      </dl>
+    </section>
+
+    <section aria-labelledby="script-title">
+      <h2 id="script-title">How the script works</h2>
+      <p><code>system_stats.sh</code> collects the current date, the server's timezone, uptime, root disk usage and RAM usage. It stores these values in variables and prints a compact report. The <code>df -h</code> commands provide free and total disk space; <code>free -m</code> and <code>awk</code> calculate the RAM usage percentage.</p>
+      <p>The <code>disk_status</code> function returns <strong>OK</strong> when disk usage is below 80% and <strong>WARNING</strong> at 80% or above. Exactly 80% already triggers the warning.</p>
+      <p><code>system_stats_viewer.sh</code> runs the stats script and pipes its output through <code>sed</code> to remove terminal colour codes and escape HTML characters. It wraps the output in a <code>&lt;pre&gt;</code> element to preserve its spacing and line breaks. The iframe below displays that generated HTML.</p>
+    </section>
+
+    <section aria-labelledby="schedule-title">
+      <h2 id="schedule-title">Schedule and serving</h2>
+      <p>Cron runs the viewer every minute with the schedule <code>* * * * *</code>. With this iframe layout, the generated report needs to be written to <code>/var/www/viikko3/index_viikko3.html</code>, while this documentation page is saved as <code>/var/www/viikko3/index.html</code>.</p>
+      <p>Run the generation command from the project directory so the viewer can find <code>system_stats.sh</code>:</p>
+      <pre class="command-block"><code>bash ./system_stats_viewer.sh &gt; /var/www/viikko3/index_viikko3.html</code></pre>
+      <p>Nginx serves the documentation at <a href="/viikko3/"><code>/viikko3/</code></a> and the embedded report at <code>/viikko3/index_viikko3.html</code>. Keep <code>system_stats_viewer.css</code> alongside both HTML files.</p>
+      <p>Each cron run creates a new snapshot. Reload the page to see the latest report; an already open iframe does not refresh automatically.</p>
+    </section>
+
+    <section aria-labelledby="tests-title">
+      <h2 id="tests-title">Test results</h2>
+      <p>The disk status function was tested with fixed percentages without filling the disk.</p>
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th scope="col">Test</th><th scope="col">Expected</th><th scope="col">Result</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><code>disk_status 50</code></td><td>OK</td><td>Passed — OK</td></tr>
+            <tr><td><code>disk_status 79</code></td><td>OK</td><td>Passed — OK</td></tr>
+            <tr><td><code>disk_status 80</code></td><td>WARNING</td><td>Passed — WARNING</td></tr>
+            <tr><td><code>disk_status 90</code></td><td>WARNING</td><td>Passed — WARNING</td></tr>
+            <tr><td>Scheduled generation</td><td>Fresh report every minute</td><td>Existing cron job reported working; the iframe output path still needs server verification</td></tr>
+            <tr><td>Reboot test</td><td>Updates resume; uptime reflects the restart</td><td>Pending — not tested yet</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section aria-labelledby="learning-title">
+      <h2 id="learning-title">What I learned</h2>
+      <p>Terminal output needs a small conversion before it can be displayed safely on a website. The viewer removes ANSI colour codes and converts <code>&amp;</code>, <code>&lt;</code> and <code>&gt;</code> to HTML entities. Keeping the generated status report in a separate iframe also lets cron update the report without replacing the documentation.</p>
+    </section>
+
+    <section class="system-status" aria-labelledby="status-title">
+      <h2 id="status-title" lang="fi">Järjestelmän tila</h2>
+      <iframe
+        src="index_viikko3.html"
+        title="Server status report"
+        style="width: 100%; height: 450px; border: 0;">
+      </iframe>
+    </section>
+  </main>
+</body>
+</html>

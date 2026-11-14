@@ -2,14 +2,18 @@
 set -euo pipefail #changes how bash handles errors
 
 cat <<'HTML' #cat - prints the following lines and >>html tells bash to leave the contents literal
+
+
 <!doctype html>
 <html lang="fi">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="system_stats_viewer.css">
   <title>Järjestelmän tila</title>
 </head>
-<body>
-<pre>
+<body class="status-page">
+<pre class="status-output">
 HTML
 
 bash ./system_stats.sh | #runs script, pipe send the output to the next command
