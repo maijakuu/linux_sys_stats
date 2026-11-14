@@ -9,7 +9,6 @@
 <body>
   <main class="report">
     <header>
-      <p class="eyebrow">Linux · Bash · System monitoring</p>
       <h1>Week 3: Printing system status using Bash</h1>
       <p class="intro">A Bash script that reports the server's time, uptime, disk space and memory usage.</p>
     </header>
@@ -37,11 +36,8 @@
 
     <section aria-labelledby="schedule-title">
       <h2 id="schedule-title">Schedule and serving</h2>
-      <p>Cron runs the viewer every minute with the schedule <code>* * * * *</code>. With this iframe layout, the generated report needs to be written to <code>/var/www/viikko3/index_viikko3.html</code>, while this documentation page is saved as <code>/var/www/viikko3/index.html</code>.</p>
-      <p>Run the generation command from the project directory so the viewer can find <code>system_stats.sh</code>:</p>
-      <pre class="command-block"><code>bash ./system_stats_viewer.sh &gt; /var/www/viikko3/index_viikko3.html</code></pre>
-      <p>Nginx serves the documentation at <a href="/viikko3/"><code>/viikko3/</code></a> and the embedded report at <code>/viikko3/index_viikko3.html</code>. Keep <code>system_stats_viewer.css</code> alongside both HTML files.</p>
-      <p>Each cron run creates a new snapshot. Reload the page to see the latest report; an already open iframe does not refresh automatically.</p>
+      <p>Cron runs the viewer every minute with the schedule <code>* * * * *</code>. 
+
     </section>
 
     <section aria-labelledby="tests-title">
@@ -57,16 +53,9 @@
             <tr><td><code>disk_status 79</code></td><td>OK</td><td>Passed — OK</td></tr>
             <tr><td><code>disk_status 80</code></td><td>WARNING</td><td>Passed — WARNING</td></tr>
             <tr><td><code>disk_status 90</code></td><td>WARNING</td><td>Passed — WARNING</td></tr>
-            <tr><td>Scheduled generation</td><td>Fresh report every minute</td><td>Existing cron job reported working; the iframe output path still needs server verification</td></tr>
-            <tr><td>Reboot test</td><td>Updates resume; uptime reflects the restart</td><td>Pending — not tested yet</td></tr>
           </tbody>
         </table>
       </div>
-    </section>
-
-    <section aria-labelledby="learning-title">
-      <h2 id="learning-title">What I learned</h2>
-      <p>Terminal output needs a small conversion before it can be displayed safely on a website. The viewer removes ANSI colour codes and converts <code>&amp;</code>, <code>&lt;</code> and <code>&gt;</code> to HTML entities. Keeping the generated status report in a separate iframe also lets cron update the report without replacing the documentation.</p>
     </section>
 
     <section class="system-status" aria-labelledby="status-title">
